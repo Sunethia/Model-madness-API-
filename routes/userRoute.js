@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const con = require("../lib/db_connection");
+const jwt = require("jsonwebtoken");
 
 router.get("/", (req, res) => {
   try {
@@ -28,11 +29,11 @@ router.get("/:id", (req, res) => {
   }
 });
 router.post("/", (req, res) => {
-  const { FullName, Email, Password, UserRole, PhoneNumber, JoinDate, Cart } =
+  const { fullname, email, password, userrole, phone_number, join_date, cart } =
     req.body;
   try {
     con.query(
-      `INSERT INTO users(FullName, Email, Password, UserRole, PhoneNumber, JoinDate, Cart) VALUES("${FullName}","${Email}","${Password}","${UserRole}","${PhoneNumber}","${JoinDate}","${Cart}")`,
+      `INSERT INTO users(fullname, email, password, userrole, phone_number, join_date, cart) VALUES("${fullname}","${email}","${password}","${userrole}","${phone_number}","${join_date}","${cart}")`,
       (err, result) => {
         if (err) throw err;
         res.send(result);
@@ -43,12 +44,12 @@ router.post("/", (req, res) => {
   }
 });
 router.put("/:id", (req, res) => {
-  const { FullName, Email, Password, UserRole, PhoneNumber, JoinDate, Cart } =
+  const { fullname, email, password, userrole, phone_number, join_date, cart } =
     req.body;
   try {
     con.query(
       `UPDATE users
-         SET FullName = "${FullName}", Email = "${Email}", Password = "${Password}", UserRole = "${UserRole}", PhoneNumber = "${PhoneNumber}", JoinDate = "${JoinDate}", Cart = "${Cart}"
+         SET fullname = "${fullname}", email = "${email}", password = "${password}", userrole = "${userrole}", phone_number = "${phone_number}", join_date = "${join_date}", cart = "${cart}"
          WHERE id=${req.params.id}`,
       (err, result) => {
         if (err) throw err;
@@ -82,27 +83,27 @@ router.post("/register", (req, res) => {
   try {
     let sql = "INSERT INTO users SET ?";
     //This is the body im requesting
-    const { Password, FullName, Email, JoinDate, PhoneNumber } = req.body;
+    const { password, fullname, email, join_date, phone_number } = req.body;
     // The start of hashing / encryption
     const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(Password, salt);
+    const hash = bcrypt.hashSync(password, salt);
     //Database terms
     let user = {
-      Password: hash,
-      FullName,
+      password: hash,
+      fullname,
       // We sending the hash value to be stored witin the table
-      Email,
-      Cart: "",
-      JoinDate,
-      UserRole: "user",
-      PhoneNumber,
+      email,
+      cart: "",
+      join_date,
+      userrole: "user",
+      phone_number,
     };
     //SQL Query
     //connection to database
     con.query(sql, user, (err, result) => {
       if (err) throw err;
       console.log(result);
-      res.send(`User ${user.Fullname} created successfully`);
+      res.send(`User ${user.fullname} created successfully`);
     });
   } catch (error) {
     console.log(error);
@@ -131,11 +132,11 @@ router.post("/login", (req, res) => {
           // The information the should be stored inside token
           const payload = {
             user: {
-              Id: result[0].id,
-              FullName: result[0].FullName,
-              JoinDate: result[0].JoinDate,
-              UserRole: result[0].UserRole,
-                  PhoneNumber: result[0].PhoneNumber,
+              id: result[0].id,
+              fullname: result[0].fullname,
+              join_date: result[0].join_date,
+              userrole: result[0].userrole,
+              phone_number: result[0].phone_number,
             },
           };
           // Creating a token and setting expiry date

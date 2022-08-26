@@ -29,7 +29,7 @@ router.get("/:id", (req, res) => {
   }
 });
 // Add
-router.post("/", middleware, (req, res) => {
+router.post("/", (req, res) => {
   console.log(req.user);
   if (req.user.userrole === "admin") {
     const { title, category, description, imgURL, price, quantity } = req.body;
@@ -56,7 +56,7 @@ router.put("/:id", middleware, (req, res) => {
   const { title, category, description, imgURL, price, quantity } = req.body;
   try {
     con.query(
-      `UPDATE products set title = "${title}", category = "${category}", description = "${description}", imgURL = "${imgURL}", price = "${price}", user_id = "${req.user.id}", quantity = "${quantity}" WHERE id = "${req.params.id}"`,
+      `UPDATE products SET title = "${title}", category = "${category}", description = "${description}", imgURL = "${imgURL}", price = "${price}", user_id = "${req.user.id}", quantity = "${quantity}" WHERE id = "${req.params.id}"`,
       (err, result) => {
         if (err) throw err;
         res.send(result);
@@ -68,7 +68,7 @@ router.put("/:id", middleware, (req, res) => {
   }
 });
 // Delete by id
-router.delete("/products/:id", middleware, (req, res) => {
+router.delete("/:id", (req, res) => {
   try {
     con.query(
       `DELETE FROM products WHERE id=${req.params.id}`,

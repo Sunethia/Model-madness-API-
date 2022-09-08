@@ -6,11 +6,11 @@ const middleware = require("../middleware/auth");
 // get cart items from user
 router.get("/users/:id/cart", middleware, (req, res) => {
   try {
-    const strQuery = "SELECT cart FROM users WHERE user_id = ?";
+    const strQuery = "SELECT cart FROM users WHERE id = ?";
     con.query(strQuery, [req.params.id], (err, results) => {
       if (err) throw err;
       (function Check(a, b) {
-        a = parseInt(req.user.user_id);
+        a = parseInt(req.user.id);
         b = parseInt(req.params.id);
         if (a === b) {
           //   res.send(results[0].cart);

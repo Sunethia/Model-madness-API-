@@ -30,7 +30,7 @@ router.get("/users/:id/cart", middleware, (req, res) => {
   }
 });
 // add cart items
-router.post("/users/:id/cart", middleware, bodyParser.json(), (req, res) => {
+router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
   try {
     let { product_id } = req.body;
     const qcart = `SELECT cart

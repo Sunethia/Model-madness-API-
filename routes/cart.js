@@ -58,13 +58,13 @@ router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
         let product = {
           cartid: cart.length + 1,
           id: results[0].id,
-          name: results[0].name,
-          price: results[0].price,
-          descriptions: results[0].descriptions,
-          image: results[0].image,
+          title: results[0].title,
           category: results[0].category,
-          created_date: results[0].created_date,
-          stock: results[0].stock,
+          description: results[0].description,
+          imgUrl: results[0].imgUrl,
+          price: results[0].price,
+          user_id: results[0].user_id,
+          quantity: results[0].quantity,
         };
         cart.push(product);
         // res.send(cart)

@@ -25,6 +25,9 @@ app.use("/users", userRoute);
 const productsRoute = require("./routes/productRoute");
 app.use("/products", productsRoute);
 
+const cart = require("./routes/cart");
+app.use(cart);
+
 const port = process.env.PORT || 6969;
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);

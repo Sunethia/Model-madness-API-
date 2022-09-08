@@ -35,9 +35,9 @@ router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
     let { product_id } = req.body;
     const qcart = `SELECT cart
       FROM users
-      WHERE user_id = ?;
+      WHERE id = ?;
       `;
-    con.query(qcart, req.user.user_id, (err, results) => {
+    con.query(qcart, req.user.id, (err, results) => {
       if (err) throw err;
       let cart;
       if (results.length > 0) {
@@ -72,7 +72,7 @@ router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
         // res.send(cart)
         const strQuery = `UPDATE users
       SET cart = ?
-      WHERE (user_id = ${req.user.user_id})`;
+      WHERE (id = ${req.user.user_id})`;
         con.query(strQuery, /*req.user.id */ JSON.stringify(cart), (err) => {
           if (err) throw err;
           res.json({

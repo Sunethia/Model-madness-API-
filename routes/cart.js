@@ -32,7 +32,7 @@ router.get("/users/:id/cart", middleware, (req, res) => {
 // add cart items
 router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
   try {
-    let { product_id } = req.body;
+    let { id } = req.body;
     const qcart = `SELECT cart
       FROM users
       WHERE id = ?;
@@ -50,7 +50,7 @@ router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
       const strProd = `
       SELECT *
       FROM products
-      WHERE product_id = ${product_id};
+      WHERE id = ${id};
       `;
       con.query(strProd, async (err, results) => {
         if (err) throw err;
@@ -72,7 +72,7 @@ router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
         // res.send(cart)
         const strQuery = `UPDATE users
       SET cart = ?
-      WHERE (id = ${req.user.user_id})`;
+      WHERE (id = ${req.user.id})`;
         con.query(strQuery, /*req.user.id */ JSON.stringify(cart), (err) => {
           if (err) throw err;
           res.json({
@@ -87,24 +87,24 @@ router.post("/users/:id/cart", bodyParser.json(), (req, res) => {
   }
 });
 // delete one item from cart
-router.delete("/users/:id/cart/:product_id", middleware, (req, res) => {
+router.delete("/users/:id/cart/:id", middleware, (req, res) => {
   const dcart = `SELECT cart
     FROM users
     WHERE user_id = ?`;
-  con.query(dcart, req.user.user_id, (err, results) => {
+  con.query(dcart, req.user.id, (err, results) => {
     if (err) throw err;
     let item = JSON.parse(results[0].cart).filter((x) => {
-      return x.cartid != req.params.product_id;
+      return x.cartid != req.params.id;
     });
     // res.send(item)
     const strQry = `
     UPDATE users
     SET cart = ?
-    WHERE user_id= ? ;
+    WHERE id= ? ;
     `;
     con.query(
       strQry,
-      [JSON.stringify(item), req.user.user_id],
+      [JSON.stringify(item), req.user.id],
       (err, data, fields) => {
         if (err) throw err;
         res.json({
@@ -119,15 +119,15 @@ router.delete("/users/:id/cart", middleware, (req, res) => {
   const dcart = `SELECT cart
     FROM users
     WHERE id = ?`;
-  con.query(dcart, req.user.user_id, (err, results) => {
+  con.query(dcart, req.user.id, (err, results) => {
     // let cart =
   });
   const strQry = `
     UPDATE users
       SET cart = null
-      WHERE (user_id = ?);
+      WHERE (id = ?);
       `;
-  con.query(strQry, [req.user.user_id], (err, data, fields) => {
+  con.query(strQry, [req.user.id], (err, data, fields) => {
     if (err) throw err;
     res.json({
       msg: "Item Deleted",
